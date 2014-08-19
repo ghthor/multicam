@@ -1,0 +1,30 @@
+#!/bin/sh
+
+xfce4-terminal -e "ffplay -f v4l2 -video_size 640x480 -input_format mjpeg -i /dev/video0"
+xfce4-terminal -e "ffplay -f v4l2 -video_size 640x480 -input_format mjpeg -i /dev/video1"
+
+# FPS="30"
+# WIDTH="640"
+# HEIGHT="480"
+
+# CAM_SIZE="$(($WIDTH))x$HEIGHT"
+# OUT_SIZE="$(($WIDTH*2))x$HEIGHT"
+
+# ffmpeg \
+#     -f v4l2 -ts abs -framerate $FPS -video_size $CAM_SIZE -pixel_format yuv420p -input_format mjpeg -i /dev/video0 \
+#     -f v4l2 -ts abs -framerate $FPS -video_size $CAM_SIZE -pixel_format yuv420p -input_format mjpeg -i /dev/video1 \
+#     \
+#     -filter_complex "
+#         nullsrc=size=$OUT_SIZE [background]; 
+#         [0:v] setpts='(RTCTIME - RTCSTART) / (TB * 1000000)' [left];
+#         [1:v] setpts='(RTCTIME - RTCSTART) / (TB * 1000000)' [right];
+#         [background][left]       overlay=shortest=1       [background+left];
+#         [background+left][right] overlay=shortest=1:x=$WIDTH [left+right]
+#         " \
+#     -map "[left+right]" \
+#     \
+#     -framerate $FPS \
+#     -pix_fmt yuv420p \
+#     -s $OUT_SIZE \
+#     -f mpegts \
+#     tcp://localhost:44445?listen
